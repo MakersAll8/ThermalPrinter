@@ -7,13 +7,16 @@ import java.awt.image.DataBufferInt;
 public class ZJ58 {
     static final byte[] init = {0x1b, 0x40};
     static final byte[] reset = {0x1b, 0x40, 0x0a};
-    static final byte[] print_and_roll = {0x0a};
+    static final byte[] print_and_roll = {0x0a}; //LF
     static final byte[] zh_mode = {0x1c, 0x26};
     static final byte[] cut = {0x0a, 0x1d, 0x56, 0x42, 0x01, 0x0a};
     static final byte[] clean_end = {0x1b, 0x4a, 0x30, 0x1d, 0x56, 0x42, 0x01, 0x0a, 0x1b, 0x40};
     static int nPaperWidth = 384;
     static int nMode = 0;
     static int printWidth = 0;
+    static byte[] ESC_Align_Left = new byte[] {0x1b, 0x61, 0x00 };
+    static byte[] ESC_Align_Center = new byte[] {0x1b, 0x61, 0x01 };
+    static byte[] ESC_Align_Right = new byte[] {0x1b, 0x61, 0x02 };
 
     private static int[] p0 = new int[]{0, 128};
     private static int[] p1 = new int[]{0, 64};

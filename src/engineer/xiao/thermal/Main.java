@@ -3,6 +3,7 @@ package engineer.xiao.thermal;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Main {
@@ -20,7 +21,19 @@ public class Main {
                 new ProductLine("Nike Maxin 200", "耐克Maxin 200", 220.0, 2.00)
         );
         productLines.add(
-                new ProductLine("Nike Air Force 1 High", "耐克空军一号高帮", 190.0, 3.00)
+                new ProductLine("Nike Air Force 1 High", "耐克空军一号高帮", 190.0, 3.50)
+        );
+
+        productLines.add(
+                new ProductLine("Raspberry Pi 4B", "树莓派4B", 230, 5.00)
+        );
+
+        productLines.add(
+                new ProductLine("Orange Pi", "橙子派", 120, 6.00)
+        );
+
+        productLines.add(
+                new ProductLine("ScanHom QR Code Scanner", "二维码识别器", 150, 11.00)
         );
 
         // load logo and qr code
@@ -52,19 +65,37 @@ public class Main {
 
         // print product lines
         // 打印每一行产品列表
+        DecimalFormat df2 = new DecimalFormat("#.##");
         double total = 0;
         for (ProductLine productLine : productLines) {
-            byte[] byteArray = productLine.toString().getBytes("GBK");
+            byte[] byteArray = (productLine.getProductEn() + " " + productLine.getProductCn()).getBytes("GBK");
+            // change alignment
+            ps.write(ZJ58.ESC_Align_Left);
             ps.write(byteArray);
             ps.write(ZJ58.print_and_roll);
+
+            byteArray = (String.format("%.2f", productLine.getPrice()) + " x "
+                    + df2.format(productLine.getQuantity()) + " = "
+                    + String.format("%.2f", productLine.getTotal())).getBytes("GBK");
+            ps.write(ZJ58.ESC_Align_Right);
+            ps.write(byteArray);
+
+            ps.write(ZJ58.print_and_roll);
+
             total += productLine.getTotal();
         }
 
         // print total
         // 打印总计
-        String totalString = "Total 总计： " + total;
+        String totalString = "Total 总计： " + String.format("%.2f", total);
         ps.write(totalString.getBytes("GBK"));
         ps.write(ZJ58.print_and_roll);
+
+        ps.write(ZJ58.ESC_Align_Center);
+        ps.write(ZJ58.print_and_roll);
+        ps.write("Tech Support 技术支持 ".getBytes("GBK"));
+        ps.write(ZJ58.print_and_roll);
+        ps.write("https://xiao.engineer".getBytes("GBK"));
 
         // print qr code
         // 打印二维码
