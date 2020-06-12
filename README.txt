@@ -13,10 +13,6 @@ Also, your Thermal printer might not be mounted at /dev/usb/lp2 like mine. Run
   - ll /dev/usb/ to see how many printers you have.
   - lpstat -s could be useful too
 
-N.B. There are hex code that allow you to align center, align right, etc. I
-encourage you to explore the official demo for Android. It is trivial to
-adapt code you need to achieve alignment.
-
 Feel free to use, or modify this repo in any way you want. I am not liable to
 any harm or damages caused in anyway.
 
@@ -31,8 +27,5 @@ any harm or damages caused in anyway.
 此外，你的热敏打印机不一定挂载在 /dev/usb/lp2 这个路径。跑
   - ll /dev/usb/ 来查看你有几台打印机
   - lpstat -s 也可能有帮助
-
-注意：（NB不是牛X）官方提供了16进制代码来实现居中、靠右等等这些操作。大家可以参考官方安卓的Demo
-来实现。实现起来很容易。
 
 这些代码你可以随意使用、修改。我对任何因此带来的任何伤害或者损坏不承担责任。
