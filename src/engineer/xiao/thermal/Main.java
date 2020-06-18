@@ -5,11 +5,37 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
 
 
     public static void main(String[] args) throws IOException {
+        // use bash to list all line printers
+        // 用bash列出所有打印机
+        ArrayList<String> availableLp = new ArrayList<>();
+        String[] cmd = {
+                "/bin/bash",
+                "-c",
+                "ls /dev/usb | grep lp"};
+        Runtime runtime = Runtime.getRuntime();
+        Process p = runtime.exec(cmd);
+        BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+        String line;
+        System.out.println("Available line printer devices: ");
+        while((line = br.readLine()) != null){
+            availableLp.add(line);
+            System.out.println(line);
+        }
+
+        Scanner kb = new Scanner(System.in);
+        String selectedLp;
+        do {
+            // prompt user to choose a line printer
+            // 提示用户选择打印机
+            System.out.print("choose your thermal printer: ");
+            selectedLp = kb.nextLine();
+        } while (!availableLp.contains(selectedLp));
 
         // create an array list of product lines
         // 创建代表产品列表每一行的一个数组
@@ -48,7 +74,7 @@ public class Main {
 
         // open stream connection to line printer
         // 打开连接打印机的数据流
-        FileOutputStream fs = new FileOutputStream("/dev/usb/lp2");
+        FileOutputStream fs = new FileOutputStream("/dev/usb/"+selectedLp);
         PrintStream ps = new PrintStream(fs);
         // sending hex code to initialize the thermal printer. Note, this clears
         // encoding settings as well. I believe default is ASCII.
@@ -92,14 +118,18 @@ public class Main {
         ps.write(ZJ58.print_and_roll);
 
         ps.write(ZJ58.ESC_Align_Center);
-        ps.write(ZJ58.print_and_roll);
-        ps.write("Tech Support 技术支持 ".getBytes("GBK"));
-        ps.write(ZJ58.print_and_roll);
-        ps.write("https://xiao.engineer".getBytes("GBK"));
+//        ps.write(ZJ58.print_and_roll);
 
         // print qr code
         // 打印二维码
         ps.write(qrCode);
+        ps.write(ZJ58.print_and_roll);
+
+        ps.write("Tech Support 技术支持 ".getBytes("GBK"));
+        ps.write(ZJ58.print_and_roll);
+        ps.write("https://xiao.engineer".getBytes("GBK"));
+        ps.write(ZJ58.print_and_roll);
+        ps.write(ZJ58.print_and_roll);
         ps.write(ZJ58.clean_end);
 
         // send all hex data stream
