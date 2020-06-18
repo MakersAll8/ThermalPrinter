@@ -7,7 +7,7 @@ public class ProductLine {
     private double quantity;
     private double total;
 
-    public ProductLine(String productEn, String productCn, double price, double quantity) {
+    ProductLine(String productEn, String productCn, double price, double quantity) {
         this.productEn = productEn;
         this.productCn = productCn;
         this.price = price;
@@ -15,23 +15,23 @@ public class ProductLine {
         this.total = price * quantity;
     }
 
-    public String getProductEn() {
+    String getProductEn() {
         return productEn;
     }
 
-    public String getProductCn() {
+    String getProductCn() {
         return productCn;
     }
 
-    public double getPrice() {
+    double getPrice() {
         return price;
     }
 
-    public double getQuantity() {
+    double getQuantity() {
         return quantity;
     }
 
-    public double getTotal() {
+    double getTotal() {
         return total;
     }
 
