@@ -22,7 +22,7 @@ public class Main {
 
         // print qr code
         // 打印二维码
-        String data = "https://gitlab.xiao.engineer/xiao";
+        String data = "测试二维码";
         int width = 350;
         int height = 350;
         try {
