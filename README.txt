@@ -16,6 +16,11 @@ Also, your Thermal printer might not be mounted at /dev/usb/lp2 like mine. Run
 Feel free to use, or modify this repo in any way you want. I am not liable to
 any harm or damages caused in anyway.
 
+QR Code is generated with Google's Zebra Crossing
+Maven Dependencies:
+    com.google.zxing:core:3.4.0
+    com.google.zxing:javase:3.4.0
+
 这个Demo展示了如何从Ubuntu系统通过资江58热敏打印机打印小票。
 
 这个Demo不是官方的Demo，而是基于我对官方安卓Demo有限的理解做的一个简单粗暴版本。
@@ -29,3 +34,9 @@ any harm or damages caused in anyway.
   - lpstat -s 也可能有帮助
 
 这些代码你可以随意使用、修改。我对任何因此带来的任何伤害或者损坏不承担责任。
+
+二维码生成用了谷歌的Zebra Crossing
+Maven依赖包:
+    com.google.zxing:core:3.4.0
+    com.google.zxing:javase:3.4.0
+我国应该有镜像，使用不需要访问网络。你要用不了可以把QrCode.java改成你自己的二维码包

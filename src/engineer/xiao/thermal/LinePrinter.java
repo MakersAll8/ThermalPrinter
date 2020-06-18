@@ -82,6 +82,20 @@ class LinePrinter {
 
     }
 
+    void printImage(byte[] imageBytes){
+        BufferedImage bufferedImage;
+        try {
+            bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+            byte[] blackWhitePix = ZJ58.processImage(bufferedImage);
+            byte[] image = ZJ58.eachLinePixToCmd(blackWhitePix, ZJ58.printWidth, ZJ58.nMode);
+            getPrinter().write(image);
+            getPrinter().write(ZJ58.print_and_roll);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     void printLines(ArrayList<ProductLine> productLines) throws IOException {
         DecimalFormat df2 = new DecimalFormat("#.##");
         double total = 0;

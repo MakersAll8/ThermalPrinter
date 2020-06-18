@@ -1,5 +1,7 @@
 package engineer.xiao.thermal;
 
+import com.google.zxing.WriterException;
+
 import java.io.*;
 
 public class Main {
@@ -20,7 +22,15 @@ public class Main {
 
         // print qr code
         // 打印二维码
-        lp.printImage("./myqrcode.png");
+        String data = "https://gitlab.xiao.engineer/xiao";
+        int width = 350;
+        int height = 350;
+        try {
+            byte[] qrCode = QrCode.getQRCodeImage(data, width, height);
+            lp.printImage(qrCode);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
 
         lp.printFooter();
 
