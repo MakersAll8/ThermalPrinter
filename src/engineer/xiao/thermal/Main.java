@@ -1,5 +1,7 @@
 package engineer.xiao.thermal;
 
+import com.google.zxing.WriterException;
+
 import java.io.*;
 
 public class Main {
@@ -25,29 +27,6 @@ public class Main {
         ReceiptServer server = new ReceiptServer();
         server.start();
 
-//        lp.alignCenter();
-//        // Test Print
-//        lp.font_size_double();
-//        lp.bold();
-//        lp.printLine("中文");
-////        lp.printLine("EN");
-//        lp.cancel_bold();
-//        lp.font_size_normal();
-//        lp.roll();
-//
-//        // print qr code
-//        // 打印二维码
-//        int width = 350;
-//        int height = 350;
-//        String data = "指令";
-//        try {
-//            byte[] qrCode = QrCode.getQRCodeImage(data, width, height);
-//            lp.printImage(qrCode);
-//        } catch (WriterException e) {
-//            e.printStackTrace();
-//        }
-//        lp.printFooter(false);
-
         do {
             // wait for qr code scan
             String qrId = QrScanner.read();
@@ -55,6 +34,31 @@ public class Main {
             lp.printReceipt(qrId);
         } while (true);
 
+    }
+
+    void printTest(LinePrinter lp) throws IOException {
+        lp.alignCenter();
+        // Test Print
+        lp.font_size_double();
+        lp.bold();
+        lp.printLine("中文");
+//        lp.printLine("EN");
+        lp.cancel_bold();
+        lp.font_size_normal();
+        lp.roll();
+
+        // print qr code
+        // 打印二维码
+        int width = 350;
+        int height = 350;
+        String data = "https://xiao.engineer";
+        try {
+            byte[] qrCode = QrCode.getQRCodeImage(data, width, height);
+            lp.printImage(qrCode);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+        lp.printFooter(false);
     }
 
 

@@ -15,11 +15,7 @@ public class ReceiptServer extends Thread {
             ServerSocket serverSocket = new ServerSocket(serverPort);
             while (true) {
                 Socket s = serverSocket.accept();
-
-                DataInputStream is = new DataInputStream(s.getInputStream());
-                DataOutputStream os = new DataOutputStream(s.getOutputStream());
-
-                Thread serve = new ServeHandler(s, is, os);
+                Thread serve = new ServeHandler(s);
                 serve.start();
             }
         } catch (IOException e) {

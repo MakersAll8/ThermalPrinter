@@ -8,14 +8,15 @@ import java.io.*;
 import java.net.Socket;
 
 public class ServeHandler extends Thread {
-    private final DataInputStream is;
-    private final DataOutputStream os;
-    private final Socket s;
 
-    public ServeHandler(Socket s, DataInputStream is, DataOutputStream os) {
+    private final Socket s;
+    private DataInputStream is;
+    private DataOutputStream os;
+
+    public ServeHandler(Socket s) throws IOException {
         this.s = s;
-        this.is = is;
-        this.os = os;
+        is = new DataInputStream(s.getInputStream());
+        os = new DataOutputStream(s.getOutputStream());
     }
 
     public void run() {
@@ -37,25 +38,22 @@ public class ServeHandler extends Thread {
             if (input.isJsonObject()) {
                 String qrId = input.getAsJsonObject().get("qrID").getAsString();
                 ReceiptServer.lp.printReceipt(qrId);
-                writer.write(success.toString());
+                writer.write(success.toString()+"\n");
                 writer.flush();
-                return;
+            } else {
+                writer.write(failed.toString()+"\n");
+                writer.flush();
             }
-            writer.write(failed.toString());
-            writer.flush();
 
         } catch (Exception e) {
             e.printStackTrace();
-            try {
-                writer.write(failed.toString());
-                writer.flush();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
         } finally {
             try {
+                reader.close();
+                writer.close();
                 is.close();
                 os.close();
+                s.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
