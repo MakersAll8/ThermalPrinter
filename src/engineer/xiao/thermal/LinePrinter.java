@@ -218,7 +218,7 @@ class LinePrinter {
         //  getPrinter().close();
     }
 
-    void printReceipt(String qrId) throws IOException {
+    synchronized void printReceipt(String qrId) throws IOException {
         // get qr info
         QrReference qrRef = new QrReference(qrId);
         ArrayList<String> linesToPrint = qrRef.linesToPrint();

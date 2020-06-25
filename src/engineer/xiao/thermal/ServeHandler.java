@@ -31,8 +31,6 @@ public class ServeHandler extends Thread {
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 
         try {
-            writer.write("{\"accept\":\"json\"}\n");
-            writer.flush();
             received = reader.readLine();
             JsonElement input = JsonParser.parseString(received);
             if (input.isJsonObject()) {
