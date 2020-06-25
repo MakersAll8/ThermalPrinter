@@ -14,9 +14,13 @@ public class ZJ58 {
     static int nPaperWidth = 384;
     static int nMode = 0;
     static int printWidth = 0;
-    static byte[] ESC_Align_Left = new byte[] {0x1b, 0x61, 0x00 };
-    static byte[] ESC_Align_Center = new byte[] {0x1b, 0x61, 0x01 };
-    static byte[] ESC_Align_Right = new byte[] {0x1b, 0x61, 0x02 };
+    static byte[] ESC_Align_Left = new byte[]{0x1b, 0x61, 0x00};
+    static byte[] ESC_Align_Center = new byte[]{0x1b, 0x61, 0x01};
+    static byte[] ESC_Align_Right = new byte[]{0x1b, 0x61, 0x02};
+    static byte[] cancel_bold = {0x1b, 0x45, 0x00};// 取消加粗模式
+    static byte[] bold = {0x1b, 0x45, 0x01}; // 选择加粗模式
+    static byte[] font_size_normal = {0x1d, 0x21, 0x00};// 字体不放大
+    static byte[] font_size_double = {0x1d, 0x21, 0x11};// 宽高加倍
 
     private static int[] p0 = new int[]{0, 128};
     private static int[] p1 = new int[]{0, 64};
@@ -26,7 +30,7 @@ public class ZJ58 {
     private static int[] p5 = new int[]{0, 4};
     private static int[] p6 = new int[]{0, 2};
 
-    public static byte[] processImage(BufferedImage imageToPrint){
+    public static byte[] processImage(BufferedImage imageToPrint) {
         printWidth = ((nPaperWidth + 7) / 8) * 8;
         int height = imageToPrint.getHeight() * printWidth / imageToPrint.getWidth();
         height = ((height + 7) / 8) * 8;
@@ -43,7 +47,32 @@ public class ZJ58 {
         }
 
         // get all pixels as array of integers
-        int[] grayPix = ((DataBufferInt)grayScale.getRaster().getDataBuffer()).getData();
+        int[] grayPix = ((DataBufferInt) grayScale.getRaster().getDataBuffer()).getData();
+        // convert grayScale to only black and white
+        byte[] grayPixByte = new byte[grayScale.getWidth() * grayScale.getHeight()];
+        format_K_threshold(grayPix, grayScale.getWidth(), grayScale.getHeight(), grayPixByte);
+
+        return grayPixByte;
+    }
+
+    public static byte[] processImage(BufferedImage imageToPrint, int shrinkFactor) {
+        printWidth = ((nPaperWidth + 7) / 8) / shrinkFactor * 8;
+        int height = imageToPrint.getHeight() * printWidth / imageToPrint.getWidth();
+        height = ((height + 7) / 8) * 8;
+        // resize image
+        BufferedImage resizedImage = resize(imageToPrint, printWidth, height);
+
+        // convert into grayScale
+        BufferedImage grayScale = toGrayScale(resizedImage);
+
+        if (grayScale.getType() != BufferedImage.TYPE_INT_ARGB) {
+            BufferedImage tmp = new BufferedImage(grayScale.getWidth(), grayScale.getHeight(), BufferedImage.TYPE_INT_ARGB);
+            tmp.getGraphics().drawImage(grayScale, 0, 0, null);
+            grayScale = tmp;
+        }
+
+        // get all pixels as array of integers
+        int[] grayPix = ((DataBufferInt) grayScale.getRaster().getDataBuffer()).getData();
         // convert grayScale to only black and white
         byte[] grayPixByte = new byte[grayScale.getWidth() * grayScale.getHeight()];
         format_K_threshold(grayPix, grayScale.getWidth(), grayScale.getHeight(), grayPixByte);
@@ -87,7 +116,7 @@ public class ZJ58 {
                 originalImage.getRaster().getPixel(x, y, tmp);
 
                 //calculate average
-                int mean = (tmp[0]+tmp[1]+tmp[2])/3;
+                int mean = (tmp[0] + tmp[1] + tmp[2]) / 3;
                 tmp[0] = mean;
                 tmp[1] = mean;
                 tmp[2] = mean;
