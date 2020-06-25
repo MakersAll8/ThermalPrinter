@@ -1,9 +1,6 @@
 package engineer.xiao.thermal;
 
-import com.google.zxing.WriterException;
-
 import java.io.*;
-import java.util.ArrayList;
 
 public class Main {
 
@@ -49,17 +46,13 @@ public class Main {
 //        } catch (WriterException e) {
 //            e.printStackTrace();
 //        }
-
 //        lp.printFooter(false);
 
-
         do {
-
             // wait for qr code scan
             String qrId = QrScanner.read();
             // print the qr id
             lp.printReceipt(qrId);
-
         } while (true);
 
     }
