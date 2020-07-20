@@ -8,6 +8,7 @@ import java.util.Properties;
 
 public class CommonUtil {
     static String logoPath;
+    static String charset = "GBK";
 
     public static void loadProperties(String propertiesPath){
         try {

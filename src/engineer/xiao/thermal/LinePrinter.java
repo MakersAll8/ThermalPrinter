@@ -3,6 +3,7 @@ package engineer.xiao.thermal;
 import com.google.zxing.WriterException;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.DecimalFormat;
@@ -26,7 +27,8 @@ class LinePrinter {
             String[] cmd = {
                     "/bin/bash",
                     "-c",
-                    "ls /dev/usb | grep lp"};
+//                    "lsusb | grep Winbond | grep -oP \"\\s\\d\\d\\d:\" | grep -oP \"\\d\\d\\d\""};
+                    "ls /dev/usb/"};
             Runtime runtime = Runtime.getRuntime();
             Process p = runtime.exec(cmd);
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -56,6 +58,7 @@ class LinePrinter {
             // open stream connection to line printer
             // 打开连接打印机的数据流
             FileOutputStream fs = new FileOutputStream("/dev/usb/"+selectedLp);
+//            FileOutputStream fs = new FileOutputStream(selectedLp);
             printStream = new PrintStream(fs);
         }
         return printStream;
@@ -68,7 +71,7 @@ class LinePrinter {
         // 发送初始化的16进制代码到热敏打印机。注意，这会把字符编码也重置。默认编码应该是ASCII
         getPrinter().write(ZJ58.init);
         // set encoding to GBK to print Chinese
-        // 设置编码为GBK打印中文
+        // 设置编码为打印中文
         getPrinter().write(ZJ58.zh_mode);
     }
 
@@ -123,7 +126,7 @@ class LinePrinter {
         DecimalFormat df2 = new DecimalFormat("#.##");
         double total = 0;
         for (ProductLine productLine : productLines) {
-            byte[] byteArray = (productLine.getProductEn() + " " + productLine.getProductCn()).getBytes("GBK");
+            byte[] byteArray = (productLine.getProductEn() + " " + productLine.getProductCn()).getBytes(CommonUtil.charset);
             // change alignment
             getPrinter().write(ZJ58.ESC_Align_Left);
             getPrinter().write(byteArray);
@@ -131,7 +134,7 @@ class LinePrinter {
 
             byteArray = (String.format("%.2f", productLine.getPrice()) + " x "
                     + df2.format(productLine.getQuantity()) + " = "
-                    + String.format("%.2f", productLine.getTotal())).getBytes("GBK");
+                    + String.format("%.2f", productLine.getTotal())).getBytes(CommonUtil.charset);
             getPrinter().write(ZJ58.ESC_Align_Right);
             getPrinter().write(byteArray);
 
@@ -143,7 +146,7 @@ class LinePrinter {
         // print total
         // 打印总计
         String totalString = "Total 总计： " + String.format("%.2f", total);
-        getPrinter().write(totalString.getBytes("GBK"));
+        getPrinter().write(totalString.getBytes(CommonUtil.charset));
         getPrinter().write(ZJ58.print_and_roll);
     }
 
@@ -176,16 +179,35 @@ class LinePrinter {
     }
 
     void printLine(String line) throws IOException {
-        getPrinter().write(line.getBytes("GBK"));
+//        getPrinter().write(line.getBytes(CommonUtil.charset));
+        printLineAsImg(line);
+    }
+
+    void printLine(String line, Font font) throws IOException {
+        printLineAsImg(line, font);
+    }
+
+    void printLineAsImg(String line) throws IOException {
+        BufferedImage img = t2G.convert(line);
+        byte[] blackWhitePix = ZJ58.processImage(img);
+        byte[] image = ZJ58.eachLinePixToCmd(blackWhitePix, ZJ58.printWidth, ZJ58.nMode);
+        getPrinter().write(image);
+
+        getPrinter().write(ZJ58.print_and_roll);
+    }
+
+    void printLineAsImg(String line, Font font) throws IOException {
+        BufferedImage img = t2G.convert(line, font);
+        byte[] blackWhitePix = ZJ58.processImage(img);
+        byte[] image = ZJ58.eachLinePixToCmd(blackWhitePix, ZJ58.printWidth, ZJ58.nMode);
+        getPrinter().write(image);
+
         getPrinter().write(ZJ58.print_and_roll);
     }
 
     void printFooter() throws IOException {
-        getPrinter().write(ZJ58.ESC_Align_Center);
-        getPrinter().write("技术支持".getBytes("GBK"));
-        getPrinter().write(ZJ58.print_and_roll);
-        getPrinter().write("上海校欣信息技术有限公司".getBytes("GBK"));
-//        getPrinter().write(ZJ58.print_and_roll);
+        alignCenter();
+        printLine("技术支持: 上海校欣信息技术有限公司");
         getPrinter().write(ZJ58.clean_end);
         getPrinter().write(ZJ58.cut);
         initializePrinter();
@@ -200,12 +222,9 @@ class LinePrinter {
 
     void printFooter(boolean printSupport) throws IOException {
         if(printSupport){
-            getPrinter().write(ZJ58.ESC_Align_Center);
-            getPrinter().write("技术支持".getBytes("GBK"));
-            getPrinter().write(ZJ58.print_and_roll);
-            getPrinter().write("上海校欣信息技术有限公司".getBytes("GBK"));
+            alignCenter();
+            printLine("技术支持: 上海校欣信息技术有限公司");
         }
-//        getPrinter().write(ZJ58.print_and_roll);
         getPrinter().write(ZJ58.clean_end);
         getPrinter().write(ZJ58.cut);
         initializePrinter();
@@ -230,11 +249,8 @@ class LinePrinter {
         printImage(CommonUtil.logoPath, 2);
         roll();
 
-        font_size_double();
-        bold();
-        printLine("过磅单");
-        cancel_bold();
-        font_size_normal();
+        alignCenter();
+        printLine("过磅单", new Font("System", Font.BOLD, 50));
         roll();
 
         alignLeft();
