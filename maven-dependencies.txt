@@ -1,0 +1,4 @@
+com.1stleg:jnativehook:2.1.0
+com.google.code.gson:gson:2.8.6
+com.google.zxing:core:3.4.0
+com.google.zxing:javase:3.4.0
