@@ -118,35 +118,38 @@ public class QrReference {
             lines.add("交易流水码： "+qrId);
 
             JsonObject wr = getWr();
-            lines.add(
-                    "称重计量单号： "+wr.get("id").getAsString()
-            );
+//            lines.add(
+//                    "称重计量单号： "+wr.get("id").getAsString()
+//            );
             lines.add(
                     "车牌号： "+wr.get("licensePlate").getAsString()
             );
-            lines.add(
-                    "驾驶员： "+wr.get("driver").getAsString()
-            );
+//            lines.add(
+//                    "驾驶员： "+wr.get("driver").getAsString()
+//            );
 
             if(qrInfo.get("eventType").getAsString().equals("p")){
-                JsonObject po = getPo();
-                lines.add("开单时间： "+po.get("createTime").getAsString());
-                lines.add("入库单号： "+po.get("id").getAsString());
-                lines.add("供应商： "+po.get("supplier").getAsString());
-                lines.add("原材料： "+po.get("rawMaterial").getAsString());
+//                JsonObject po = getPo();
+//                lines.add("开单时间： "+po.get("createTime").getAsString());
+//                lines.add("入库单号： "+po.get("id").getAsString());
+//                lines.add("供应商： "+po.get("supplier").getAsString());
+//                lines.add("原材料： "+po.get("rawMaterial").getAsString());
                 return lines;
             } else if(qrInfo.get("eventType").getAsString().equals("s")) {
-                JsonObject so = getSo();
-                lines.add("开单时间： "+so.get("createTime").getAsString());
-                lines.add("发货单号： "+so.get("id").getAsString());
-                lines.add("客户： "+so.get("clientName").getAsString());
-                lines.add("水泥品种： "+so.get("cementType").getAsString());
-
-                double ton = (so.get("reconciliationKG").getAsDouble()/1000);
-                DecimalFormat df = new DecimalFormat("##.00");
-                lines.add("吨位： "+df.format(ton));
+//                JsonObject so = getSo();
+//                lines.add("开单时间： "+so.get("createTime").getAsString());
+//                lines.add("发货单号： "+so.get("id").getAsString());
+//                lines.add("客户： "+so.get("clientName").getAsString());
+//                lines.add("水泥品种： "+so.get("cementType").getAsString());
+//
+//                double ton = (so.get("reconciliationKG").getAsDouble()/1000);
+//                DecimalFormat df = new DecimalFormat("##.00");
+//                lines.add("吨位： "+df.format(ton));
                 return lines;
             }
+            return null;
+        } catch (NullPointerException e){
+            System.out.println("流水信息获取失败");
             return null;
         } catch (Exception e){
             e.printStackTrace();

@@ -246,12 +246,12 @@ class LinePrinter {
         }
         // print logo
         // 打印公司图标
-        printImage(CommonUtil.logoPath, 2);
-        roll();
+//        printImage(CommonUtil.logoPath, 2);
+//        roll();
 
-        alignCenter();
-        printLine("过磅单", new Font("System", Font.BOLD, 50));
-        roll();
+//        alignCenter();
+//        printLine("过磅单", new Font("System", Font.BOLD, 50));
+//        roll();
 
         alignLeft();
         for(String line: linesToPrint){
